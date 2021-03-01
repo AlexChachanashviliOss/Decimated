@@ -6,7 +6,7 @@ public final class Decimated {
     /**
      * Container that maps location to executor data
      */
-    private final static ConcurrentHashMap<String, Executor> locations = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, Executor> locations = new ConcurrentHashMap<>(32);
 
     private Decimated() {
     }
