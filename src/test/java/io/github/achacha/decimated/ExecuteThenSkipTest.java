@@ -1,5 +1,7 @@
 package io.github.achacha.decimated;
 
+import io.github.achacha.decimated.timeprovider.TimeProviderFixed;
+import io.github.achacha.decimated.timeprovider.TimeProviderSystem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 class ExecuteThenSkipTest {
     @Test
     void testToString() {
-        ExecuteN executeN = new ExecuteN(7, ()-> System.out.println("This is a test"));
-        Assertions.assertTrue(executeN.toString().contains("n=7"));
+        ExecuteN executor = new ExecuteN(7, ()-> System.out.println("This is a test"), 0);
+        Assertions.assertTrue(executor.toString().contains("n=7"));
     }
 
     @Test
@@ -77,5 +79,40 @@ class ExecuteThenSkipTest {
         }
 
         Assertions.assertEquals(1, count.get());
+    }
+
+    /**
+     * Execute initially, skip by 1 with 1000ms interval
+     * X_X_X_X_X_
+     * T____T____
+     * !_____!___
+     *
+     * Will log 2 instances given the interval
+     */
+    @Test
+    void testInterval() {
+        try {
+            TimeProviderFixed timeProvider = new TimeProviderFixed();
+            TimeUtil.setTimeProvider(timeProvider);
+            timeProvider.setMillis(10000);
+
+            final int SIZE = 10;
+            final StringBuilder sb = new StringBuilder(SIZE);
+            for (int i=0; i<SIZE; ++i) {
+                // Execute then skip, each iteration advances time by 200 millis
+                Decimated.executeThenSkip(1, ()-> sb.append("!"), 1000);
+                while (sb.length() < i+1) {
+                    sb.append("_");
+                }
+                timeProvider.addMillis(200);
+            }
+
+            String result = sb.toString();
+            Assertions.assertEquals(10, result.length());
+            Assertions.assertEquals("!_____!___", result);
+        }
+        finally {
+            TimeUtil.setTimeProvider(new TimeProviderSystem());
+        }
     }
 }
