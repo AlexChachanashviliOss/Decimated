@@ -6,11 +6,15 @@ public final class StacktraceUtil {
 
     public static String getMyLocation() {
         final StackTraceElement[] stack = new Throwable().getStackTrace();
-        return stack[1].getClassName()+"."+ stack[1].getMethodName()+":"+stack[1].getLineNumber();
+        return toLocation(stack[1]);
     }
 
     public static String getCallerLocation() {
         final StackTraceElement[] stack = new Throwable().getStackTrace();
-        return stack[2].getClassName()+"."+ stack[2].getMethodName()+":"+stack[2].getLineNumber();
+        return toLocation(stack[2]);
+    }
+
+    public static String toLocation(StackTraceElement ste) {
+        return ste.getClassName()+"."+ ste.getMethodName()+":"+ste.getLineNumber();
     }
 }

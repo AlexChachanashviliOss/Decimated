@@ -1,0 +1,59 @@
+package io.github.achacha.decimated.deadcode;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Member;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+class DeadCodeTest {
+    @Test
+    void testCalling() {
+        // Add this package to available triggers
+        DeadCode.addPackageToScan(this.getClass().getPackageName());
+        Assertions.assertNotNull(DeadCode.getReflections());
+
+        // Verify all triggers found
+        Set<Member> members = DeadCode.findAll();
+        Assertions.assertEquals(2, members.size());
+
+        // Call method multiple times
+        DeadCodeTester tester = new DeadCodeTester();
+        tester.methodCalled();
+        tester.methodCalled();
+        tester.methodCalled();
+
+        // Verify that it triggered
+        List<DeadCode.TriggerData> items = DeadCode.getTriggered().entrySet().stream()
+                .filter(entry->entry.getKey().contains(".DeadCodeTester.methodCalled:"))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+        Assertions.assertEquals(1, items.size());
+        Assertions.assertEquals(1, tester.LOGGER.size());
+
+        // Verify trigger item
+        DeadCode.TriggerData item = items.get(0);
+        Assertions.assertEquals(3, item.getCount());
+        Assertions.assertTrue(item.toString().contains("count=3"));
+        Assertions.assertTrue(item.getLastAccessed().isBefore(Instant.now()));
+        Assertions.assertNotNull(item.getLastThrowable());
+    }
+
+    @Test
+    void testCallingError() {
+        // Add this package to available triggers
+        DeadCode.addPackageToScan(this.getClass().getPackageName());
+
+        // Call method multiple times
+        DeadCodeTester tester = new DeadCodeTester();
+        tester.methodCalled();
+        tester.methodNeverCalled();
+
+        // Verify that both entries exist
+        Assertions.assertEquals(2, DeadCode.getTriggered().size());
+    }
+}
