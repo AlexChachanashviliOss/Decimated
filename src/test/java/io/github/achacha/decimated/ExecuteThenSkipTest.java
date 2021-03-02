@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class ExecuteThenSkipTest {
     @Test
     void testToString() {
-        ExecuteN executor = new ExecuteN(7, ()-> System.out.println("This is a test"), 0);
+        ExecuteThenSkip executor = new ExecuteThenSkip(7, ()-> System.out.println("This is a test"), 0);
         Assertions.assertTrue(executor.toString().contains("n=7"));
     }
 
