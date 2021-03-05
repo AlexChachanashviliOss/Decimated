@@ -49,8 +49,18 @@ public class DeadCode {
      * @param runnable {@link Runnable) to execute when first triggered
      */
     public static void trigger(Runnable runnable) {
+        // depth of 2 means skip this method and the trigger method being called to use the caller as trigger method
+        trigger(runnable, 2);
+    }
+
+    /**
+     * Add trigger location
+     * @param runnable {@link Runnable} to execute when first triggered
+     * @param stackdepthOffset Offset into the callstack (should be 1 by default to remove this function and use caller)
+     */
+    public static void trigger(Runnable runnable, int stackdepthOffset) {
         Throwable throwable = new Throwable();
-        final String location = StacktraceUtil.toLocation(throwable.getStackTrace()[1]);
+        final String location = StacktraceUtil.toLocation(throwable.getStackTrace()[stackdepthOffset]);
         TriggerData data = triggered.computeIfAbsent(location, (l)->{
             TriggerData d = new TriggerData();
             runnable.run();
@@ -99,7 +109,7 @@ public class DeadCode {
             return "TriggerData{" +
                     "count=" + count +
                     ", lastAccessed=" + lastAccessed +
-                    ", lastThrowable=" + ExceptionUtils.getStackTrace(lastThrowable) +
+                    ", lastThrowable=" + (lastThrowable != null ? ExceptionUtils.getStackTrace(lastThrowable) : "null") +
                     '}';
         }
     }
@@ -129,5 +139,12 @@ public class DeadCode {
      */
     public static Map<String, TriggerData> getTriggered() {
         return Collections.unmodifiableMap(triggered);
+    }
+
+    /**
+     * Clear all trigger points
+     */
+    public static void clear() {
+        triggered.clear();
     }
 }
