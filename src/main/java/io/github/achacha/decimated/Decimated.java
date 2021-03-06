@@ -24,7 +24,7 @@ public final class Decimated {
      * @param runnable {@link Runnable} code to execute
      */
     public static void executeThenSkip(int n, Runnable runnable) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteThenSkip(n, runnable, 0)).execute();
     }
 
@@ -42,7 +42,7 @@ public final class Decimated {
      * @param intervalMillis Execute every interval milliseconds
      */
     public static void executeThenSkip(int n, Runnable runnable, long intervalMillis) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteThenSkip(n, runnable, intervalMillis)).execute();
     }
 
@@ -59,7 +59,7 @@ public final class Decimated {
      * @param runnable {@link Runnable} code to execute
      */
     public static void skipThenExecute(int n, Runnable runnable) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new SkipThenExecute(n, runnable, 0)).execute();
     }
 
@@ -77,7 +77,7 @@ public final class Decimated {
      * @param intervalMillis Execute every interval milliseconds
      */
     public static void skipThenExecute(int n, Runnable runnable, long intervalMillis) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new SkipThenExecute(n, runnable, intervalMillis)).execute();
     }
 
@@ -87,7 +87,7 @@ public final class Decimated {
      * @param runnable {@link Runnable} code to execute
      */
     public static void once(Runnable runnable) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteN(1, runnable, 0)).execute();
     }
 
@@ -98,7 +98,7 @@ public final class Decimated {
      * @param runnable {@link Runnable} code to execute
      */
     public static void nTimes(int n, Runnable runnable) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteN(n, runnable, 0)).execute();
     }
 
@@ -111,7 +111,7 @@ public final class Decimated {
      * @param intervalMillis Execute every interval milliseconds
      */
     public static void nTimes(int n, Runnable runnable, long intervalMillis) {
-        final String location = StacktraceUtil.getCallerLocation();
+        final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteN(n, runnable, intervalMillis)).execute();
     }
 }

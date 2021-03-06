@@ -7,10 +7,10 @@ public class DeadCodeTester {
     List<String> LOGGER = new ArrayList<>(1);
 
     public void methodCalled() {
-        DeadCode.trigger(()-> LOGGER.add("Method was called"));
+        DeadCode.trigger((accessPoint)-> LOGGER.add("Method was called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime()));
     }
 
     public void methodNeverCalled() {
-        DeadCode.trigger(()-> LOGGER.add("Method should never be called"));
+        DeadCode.trigger((accessPoint)-> LOGGER.add("Method should never be called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime()));
     }
 }

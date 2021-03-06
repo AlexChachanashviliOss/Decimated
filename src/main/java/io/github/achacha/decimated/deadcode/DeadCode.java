@@ -1,31 +1,29 @@
 package io.github.achacha.decimated.deadcode;
 
-import io.github.achacha.decimated.StacktraceUtil;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import io.github.achacha.decimated.StackTraceUtil;
 import org.reflections.Reflections;
 import org.reflections.scanners.MemberUsageScanner;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Concept of a dead code is to add a line of code that performs some logging or output when
- * code is executed and only do so once to prevent log spam.
+ * Concept of dead code is to add a line of code that performs some logging or output when
+ * code is executed and only do so limited numbe of times to prevent log spam.
  *
  * This is used to detect code that may no longer be used by the application
- * If dead code triggers then it is being used and will display stacktrace of how we got there
+ * If dead code triggers then it is being used and will provide {@link TriggerAccessPoint} of how we got there
  *
- * Each trigger point also keeps track of number of times it was triggered, last time it was triggered and last stacktrace
+ * Each trigger point also keeps track of number of times it was triggered, time it was triggered and {@link Throwable} with stack trace data
  */
 public class DeadCode {
     private static final Reflections reflections = new Reflections();
 
-    private static Method method;
+    private static final Method method;
 
     /**
      * Container that maps location to discovered dead code triggers
@@ -37,7 +35,7 @@ public class DeadCode {
 
     static {
         try {
-            method = DeadCode.class.getMethod("trigger", Runnable.class);
+            method = DeadCode.class.getMethod("trigger", TriggerAction.class);
         } catch (NoSuchMethodException e) {
             // This should never happen unless method name was changed
             throw new RuntimeException("Failed to locate dead code trigger method", e);
@@ -46,27 +44,24 @@ public class DeadCode {
 
     /**
      * Add trigger location
-     * @param runnable {@link Runnable) to execute when first triggered
+     * @param action {@link TriggerAction) to execute when triggered
      */
-    public static void trigger(Runnable runnable) {
+    public static void trigger(TriggerAction action) {
         // depth of 2 means skip this method and the trigger method being called to use the caller as trigger method
-        trigger(runnable, 2);
+        trigger(action, 1, 2);
     }
 
     /**
-     * Add trigger location
-     * @param runnable {@link Runnable} to execute when first triggered
-     * @param stackdepthOffset Offset into the callstack (should be 1 by default to remove this function and use caller)
+     * Add trigger location with max count and stack offset (to determine correct caller location)
+     * @param action {@link TriggerAction} to execute when triggered first totalCount times
+     * @param totalCount how many times to log the action before ignoring
+     * @param stackdepthOffset Offset into the callstack (should be 1 to remove this function and use caller, or more if this is part of a method chain)
      */
-    public static void trigger(Runnable runnable, int stackdepthOffset) {
+    public static void trigger(TriggerAction action, int totalCount, int stackdepthOffset) {
         Throwable throwable = new Throwable();
-        final String location = StacktraceUtil.toLocation(throwable.getStackTrace()[stackdepthOffset]);
-        TriggerData data = triggered.computeIfAbsent(location, (l)->{
-            TriggerData d = new TriggerData();
-            runnable.run();
-            return d;
-        });
-        data.trigger(throwable);
+        final String location = StackTraceUtil.toLocation(throwable.getStackTrace()[stackdepthOffset]);
+        TriggerData data = triggered.computeIfAbsent(location, (l)-> new TriggerData(totalCount, stackdepthOffset));
+        data.trigger(action, throwable);
     }
 
     /**
@@ -76,42 +71,6 @@ public class DeadCode {
      */
     public static Reflections getReflections() {
         return reflections;
-    }
-
-    /**
-     * Class that contains data about trigger
-     */
-    public static class TriggerData {
-        private int count;
-        private Instant lastAccessed;
-        private Throwable lastThrowable;
-
-        public int getCount() {
-            return count;
-        }
-
-        public Instant getLastAccessed() {
-            return lastAccessed;
-        }
-
-        public Throwable getLastThrowable() {
-            return lastThrowable;
-        }
-
-        public void trigger(Throwable throwable) {
-            lastThrowable = throwable;
-            lastAccessed = Instant.now();
-            ++count;
-        }
-
-        @Override
-        public String toString() {
-            return "TriggerData{" +
-                    "count=" + count +
-                    ", lastAccessed=" + lastAccessed +
-                    ", lastThrowable=" + (lastThrowable != null ? ExceptionUtils.getStackTrace(lastThrowable) : "null") +
-                    '}';
-        }
     }
 
     /**
