@@ -16,14 +16,44 @@ the logs and if it has not triggered for some time then the code is most likely 
 The trigger can also be used to track down how code is being called by providing a Throwable with
 a stack trace, location and time of call.
 
+**Initialize singleton and trigger**
+```
+// Done once somewhere in startup
+DeadCode.initialize("io.my.base.package");
+
+...
+
+// In method that may be dead
+DeadCode.trigger((accessPoint)-> LOGGER.warn("202103: Still in use"));
+```
+
+**Initialize instance and add trigger**
+```
+// Create
+DeadCodeManager manager = new DeadCodeManager();
+manager.addPackageToScan("io.my.base.package");
+
+...
+
+// In method that may be dead
+manager.trigger((accessPoint)-> LOGGER.warn("202103: Still in use"));
+```
+
 **To trigger once for each unique way it is called and never again**
-`
+```
 DeadCode.trigger((accessPoint)->{ 
     LOGGER.add("Method was called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime()); 
 });
-`
+```
 
-**To trigger 5 times
+**To trigger 5 times for each unique wait it is called**
+```
+DeadCode.trigger((accessPoint)->{
+  LOGGER.add("Method was called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime(),
+  5
+);
+});
+```
 
 Decimated
 -

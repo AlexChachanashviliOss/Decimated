@@ -6,7 +6,10 @@ import org.reflections.scanners.MemberUsageScanner;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,12 +101,15 @@ public class DeadCodeManager {
      */
     public Set<Member> findAll() {
         try {
-            Method method1 = DeadCodeManager.class.getMethod("trigger", TriggerAction.class);
-            Set<Member> members = reflections.getMethodUsage(method1);
+            List<Method> methods = List.of(
+                    DeadCode.class.getMethod("trigger", TriggerAction.class),
+                    DeadCode.class.getMethod("trigger", TriggerAction.class, int.class),
+                    DeadCodeManager.class.getMethod("trigger", TriggerAction.class),
+                    DeadCodeManager.class.getMethod("trigger", TriggerAction.class, int.class, int.class)
+            );
 
-            Method method2 = DeadCodeManager.class.getMethod("trigger", TriggerAction.class, int.class, int.class);
-            members.addAll(reflections.getMethodUsage(method2));
-
+            Set<Member> members = new HashSet<>(4);
+            methods.stream().map(reflections::getMethodUsage).forEach(members::addAll);
             return members;
         } catch (NoSuchMethodException e) {
             // This should never happen unless method name was changed

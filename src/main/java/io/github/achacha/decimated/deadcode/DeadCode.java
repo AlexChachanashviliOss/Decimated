@@ -45,6 +45,14 @@ public class DeadCode {
     }
 
     /**
+     * Add trigger location
+     * @param action {@link TriggerAction) to execute when triggered
+     */
+    public static void trigger(TriggerAction action, int totalCount) {
+        manager.triggerAdd(action, totalCount, OFFSET);
+    }
+
+    /**
      * Get singleton {@link DeadCodeManager}
      *
      * Location offset for stack should be {@link #OFFSET} if calling get().trigger(...) to skip this class and singleton

@@ -121,7 +121,7 @@ class DeadCodeTest {
 
 
     private static void wrapperForTriggerWithCount(AtomicInteger counter, int totalCount) {
-        DeadCode.get().trigger((accessPoint)-> counter.incrementAndGet(), totalCount, DeadCodeManager.OFFSET);
+        DeadCode.trigger((accessPoint)-> counter.incrementAndGet(), totalCount);
     }
 
     @Test
