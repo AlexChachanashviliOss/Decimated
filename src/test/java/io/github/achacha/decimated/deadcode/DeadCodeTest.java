@@ -17,20 +17,20 @@ class DeadCodeTest {
     @BeforeAll
     static void beforeAll() {
         // Add this package to available triggers
-        DeadCode.addPackageToScan(DeadCodeTest.class.getPackageName());
-        Assertions.assertNotNull(DeadCode.getReflections());
+        DeadCode.initialize(DeadCodeTest.class.getPackageName());
+        Assertions.assertNotNull(DeadCode.get().getReflections());
     }
 
     @BeforeEach
     void beforeEach() {
-        DeadCode.clear();
+        DeadCode.get().clear();
     }
 
     @Test
     void testCallingFromSameLocation() {
         // Verify all triggers found
-        Set<Member> members = DeadCode.findAll();
-        Assertions.assertEquals(2, members.size());
+        Set<Member> members = DeadCode.get().findAll();
+        Assertions.assertEquals(3, members.size());
 
         // Call method multiple times from same code location
         DeadCodeTester tester = new DeadCodeTester();
@@ -39,7 +39,7 @@ class DeadCodeTest {
         }
 
         // Verify that it triggered
-        List<TriggerData> items = DeadCode.getTriggered().entrySet().stream()
+        List<TriggerData> items = DeadCode.get().getTriggered().entrySet().stream()
                 .filter(entry->entry.getKey().contains(".DeadCodeTester.methodCalled:"))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
@@ -51,7 +51,7 @@ class DeadCodeTest {
         Assertions.assertEquals(3, item.getCount());
         Assertions.assertTrue(item.toString().contains("count=3"));
         Assertions.assertEquals(1, item.getAccessed().size());
-        TriggerData.TriggerAccessPointImpl accessPoint = item.getAccessed().entrySet().stream().findFirst().get().getValue();
+        TriggerData.TriggerAccessPointImpl accessPoint = item.getAccessed().entrySet().stream().findFirst().orElseThrow().getValue();
         Assertions.assertTrue(accessPoint.getAccessTime().isBefore(Instant.now()));
         Assertions.assertNotNull(accessPoint.getThrowable());
     }
@@ -67,7 +67,7 @@ class DeadCodeTest {
         }
 
         // Verify only one trigger is logged
-        List<TriggerData> items = DeadCode.getTriggered().entrySet().stream()
+        List<TriggerData> items = DeadCode.get().getTriggered().entrySet().stream()
                 .filter(entry->entry.getKey().contains(".DeadCodeTester.methodCalled:"))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
@@ -79,7 +79,7 @@ class DeadCodeTest {
         TriggerData item = items.get(0);
         Assertions.assertEquals(8, item.getCount());   // Total calls
         Assertions.assertEquals(3, item.getAccessed().size());  // 3 unique call spots
-        TriggerData.TriggerAccessPointImpl accessPoint = item.getAccessed().entrySet().stream().findFirst().get().getValue();
+        TriggerData.TriggerAccessPointImpl accessPoint = item.getAccessed().entrySet().stream().findFirst().orElseThrow().getValue();
         Assertions.assertTrue(accessPoint.getAccessTime().isBefore(Instant.now()));
         Assertions.assertNotNull(accessPoint.getThrowable());
 
@@ -95,13 +95,13 @@ class DeadCodeTest {
         }
         Assertions.assertEquals(1, counter.get());
 
-        Set<String> keys = DeadCode.getTriggered().keySet();
+        Set<String> keys = DeadCode.get().getTriggered().keySet();
         Assertions.assertEquals(1, keys.size());
         Assertions.assertTrue(keys.iterator().next().startsWith("io.github.achacha.decimated.deadcode.DeadCodeTest.testCallingWithOffset:"));
     }
 
     private static void wrapperForTrigger(AtomicInteger counter) {
-        DeadCode.trigger((accessPoint)-> counter.incrementAndGet(), 1, 2);
+        DeadCode.trigger((accessPoint)-> counter.incrementAndGet());
     }
 
     @Test
@@ -114,20 +114,20 @@ class DeadCodeTest {
         }
         Assertions.assertEquals(5, counter.get());
 
-        Set<String> keys = DeadCode.getTriggered().keySet();
+        Set<String> keys = DeadCode.get().getTriggered().keySet();
         Assertions.assertEquals(1, keys.size());
-        Assertions.assertTrue(keys.iterator().next().startsWith("io.github.achacha.decimated.deadcode.DeadCodeTest.testCallingWithOffsetAndMaxCount:"));
+        Assertions.assertTrue(keys.iterator().next().startsWith("io.github.achacha.decimated.deadcode.DeadCodeTest.wrapperForTriggerWithCount:"));
     }
 
 
     private static void wrapperForTriggerWithCount(AtomicInteger counter, int totalCount) {
-        DeadCode.trigger((accessPoint)-> counter.incrementAndGet(), totalCount, 2);
+        DeadCode.get().trigger((accessPoint)-> counter.incrementAndGet(), totalCount, DeadCodeManager.OFFSET);
     }
 
     @Test
     void testCallingError() {
         // Add this package to available triggers
-        DeadCode.addPackageToScan(this.getClass().getPackageName());
+        DeadCode.get().addPackageToScan(this.getClass().getPackageName());
 
         // Call method multiple times
         DeadCodeTester tester = new DeadCodeTester();
@@ -135,6 +135,6 @@ class DeadCodeTest {
         tester.methodNeverCalled();
 
         // Verify that both entries exist
-        Assertions.assertEquals(2, DeadCode.getTriggered().size());
+        Assertions.assertEquals(2, DeadCode.get().getTriggered().size());
     }
 }
