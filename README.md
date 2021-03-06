@@ -46,7 +46,7 @@ DeadCode.trigger((accessPoint)->{
 });
 ```
 
-**To trigger 5 times for each unique wait it is called**
+**To trigger 5 times for each unique way it is called**
 ```
 DeadCode.trigger((accessPoint)->{
   LOGGER.add("Method was called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime(),
