@@ -32,7 +32,7 @@ public class DeadCode {
 
     /**
      * Add trigger location
-     * @param action {@link TriggerAction) to execute when triggered
+     * @param action {@link TriggerAction} to execute when triggered
      */
     public static void trigger(TriggerAction action) {
         manager.triggerAdd(action, 1, DeadCodeManager.OFFSET);
@@ -40,7 +40,8 @@ public class DeadCode {
 
     /**
      * Add trigger location
-     * @param action {@link TriggerAction) to execute when triggered
+     * @param action {@link TriggerAction} to execute when triggered
+     * @param totalCount Total number of times to log message before discarding
      */
     public static void trigger(TriggerAction action, int totalCount) {
         manager.triggerAdd(action, totalCount, DeadCodeManager.OFFSET);

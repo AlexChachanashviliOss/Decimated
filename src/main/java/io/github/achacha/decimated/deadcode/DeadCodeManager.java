@@ -44,7 +44,7 @@ public class DeadCodeManager {
 
     /**
      * Add trigger location
-     * @param action {@link TriggerAction) to execute when triggered
+     * @param action {@link TriggerAction} to execute when triggered
      */
     public void trigger(TriggerAction action) {
         triggerAdd(action, 1, OFFSET);
