@@ -1,4 +1,6 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
+
+import io.github.achacha.decimated.TimeUtil;
 
 public abstract class AbstractExecutor implements Executor {
     protected final Runnable runnable;

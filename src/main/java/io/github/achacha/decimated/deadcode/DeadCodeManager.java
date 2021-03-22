@@ -54,10 +54,9 @@ public class DeadCodeManager {
      * Add trigger location with max count and stack offset (to determine correct caller location)
      * @param action {@link TriggerAction} to execute when triggered first totalCount times
      * @param totalCount how many times to log the action before ignoring
-     * @param stackdepthOffset Offset into the callstack (should be 1 to remove this function and use caller, or more if this is part of a method chain)
      */
-    public void trigger(TriggerAction action, int totalCount, int stackdepthOffset) {
-        triggerAdd(action, totalCount, stackdepthOffset);
+    public void trigger(TriggerAction action, int totalCount) {
+        triggerAdd(action, totalCount, OFFSET);
     }
 
     /**
@@ -105,7 +104,7 @@ public class DeadCodeManager {
                     DeadCode.class.getMethod("trigger", TriggerAction.class),
                     DeadCode.class.getMethod("trigger", TriggerAction.class, int.class),
                     DeadCodeManager.class.getMethod("trigger", TriggerAction.class),
-                    DeadCodeManager.class.getMethod("trigger", TriggerAction.class, int.class, int.class)
+                    DeadCodeManager.class.getMethod("trigger", TriggerAction.class, int.class)
             );
 
             Set<Member> members = new HashSet<>(4);

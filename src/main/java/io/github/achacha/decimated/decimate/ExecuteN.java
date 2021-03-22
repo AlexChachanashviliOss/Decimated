@@ -1,4 +1,4 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
 
 /**
  * Execute code then skip N

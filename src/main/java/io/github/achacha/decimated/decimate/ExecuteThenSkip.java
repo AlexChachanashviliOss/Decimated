@@ -1,13 +1,13 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
 
 /**
- * Skip N then execute
+ * Execute code then skip N
  */
-class SkipThenExecute extends AbstractExecutor {
+class ExecuteThenSkip extends AbstractExecutor {
     private final int n;
     private int count;
 
-    public SkipThenExecute(int n, Runnable runnable, long intervalMillis) {
+    public ExecuteThenSkip(int n, Runnable runnable, long intervalMillis) {
         super(runnable, intervalMillis);
         assert n >= 0 : "N must be positive";
         this.n = n;
@@ -15,19 +15,19 @@ class SkipThenExecute extends AbstractExecutor {
 
     @Override
     public void execute() {
-        if (++count > n) {
+        if (--count < 0) {
             if (ifCanRunUpdateLastRun()) {
                 synchronized (runnable) {
                     runnable.run();
                 }
             }
-            count = 0;
+            count = n;
         }
     }
 
     @Override
     public String toString() {
-        return "SkipThenExecute{" +
+        return "ExecuteThenSkip{" +
                 "intervalMillis=" + intervalMillis +
                 ", lastRun=" + lastRun +
                 ", n=" + n +

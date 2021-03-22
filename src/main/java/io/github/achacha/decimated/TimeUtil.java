@@ -19,7 +19,7 @@ public class TimeUtil {
      * For testing we can use a fixed time provider
      * @param timeProvider {@link TimeProvider} to use
      */
-    static void setTimeProvider(TimeProvider timeProvider) {
+    public static void setTimeProvider(TimeProvider timeProvider) {
         TimeUtil.timeProvider = timeProvider;
     }
 }

@@ -1,4 +1,4 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
 
 /**
  * Interface for all executor types used with {@link Decimated}

@@ -30,7 +30,7 @@ class DeadCodeTest {
     void testCallingFromSameLocation() {
         // Verify all triggers found
         Set<Member> members = DeadCode.get().findAll();
-        Assertions.assertEquals(3, members.size());
+        Assertions.assertEquals(4, members.size());
 
         // Call method multiple times from same code location
         DeadCodeTester tester = new DeadCodeTester();
@@ -97,7 +97,7 @@ class DeadCodeTest {
 
         Set<String> keys = DeadCode.get().getTriggered().keySet();
         Assertions.assertEquals(1, keys.size());
-        Assertions.assertTrue(keys.iterator().next().startsWith("io.github.achacha.decimated.deadcode.DeadCodeTest.testCallingWithOffset:"));
+        Assertions.assertTrue(keys.iterator().next().startsWith("io.github.achacha.decimated.deadcode.DeadCodeTest.wrapperForTrigger:"));
     }
 
     private static void wrapperForTrigger(AtomicInteger counter) {

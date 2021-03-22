@@ -10,12 +10,6 @@ import org.reflections.scanners.MemberUsageScanner;
  * This class is provided as a convenience when managing or injecting the {@link DeadCodeManager} is not available
  */
 public class DeadCode {
-    /**
-     * If calling methods from this class, the stacktrace needs to skip this class and {@link DeadCodeManager} class
-     * So caller is one deeper than the {@link DeadCodeManager} since we are adding a {@link #get()}
-     */
-    public static final int OFFSET = DeadCodeManager.OFFSET + 1;
-
     /** Instance created by call to {@link #initialize(String)}  */
     private static DeadCodeManager manager;
 
@@ -41,7 +35,7 @@ public class DeadCode {
      * @param action {@link TriggerAction) to execute when triggered
      */
     public static void trigger(TriggerAction action) {
-        manager.triggerAdd(action, 1, OFFSET);
+        manager.triggerAdd(action, 1, DeadCodeManager.OFFSET);
     }
 
     /**
@@ -49,13 +43,11 @@ public class DeadCode {
      * @param action {@link TriggerAction) to execute when triggered
      */
     public static void trigger(TriggerAction action, int totalCount) {
-        manager.triggerAdd(action, totalCount, OFFSET);
+        manager.triggerAdd(action, totalCount, DeadCodeManager.OFFSET);
     }
 
     /**
      * Get singleton {@link DeadCodeManager}
-     *
-     * Location offset for stack should be {@link #OFFSET} if calling get().trigger(...) to skip this class and singleton
      *
      * @return {@link DeadCodeManager}
      */

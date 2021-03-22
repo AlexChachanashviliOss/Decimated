@@ -1,5 +1,8 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
 
+import io.github.achacha.decimated.TimeUtil;
+import io.github.achacha.decimated.decimate.Decimated;
+import io.github.achacha.decimated.decimate.SkipThenExecute;
 import io.github.achacha.decimated.timeprovider.TimeProviderFixed;
 import io.github.achacha.decimated.timeprovider.TimeProviderSystem;
 import org.junit.jupiter.api.Assertions;

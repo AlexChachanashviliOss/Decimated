@@ -1,4 +1,6 @@
-package io.github.achacha.decimated;
+package io.github.achacha.decimated.decimate;
+
+import io.github.achacha.decimated.StackTraceUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
 
