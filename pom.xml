@@ -6,10 +6,10 @@
 
     <groupId>io.github.achacha</groupId>
     <artifactId>Decimated</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>Decimated</name>
-    <description>Classes to help control/throttle execution frequency of code.</description>
+    <description>Classes to help control/throttle execution frequency of code, and more</description>
     <url>https://github.com/AlexChachanashviliOss/Decimated</url>
 
     <developers>
