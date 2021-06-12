@@ -1,16 +1,20 @@
 What is it?
 ===
 
+Collection of code for decimated execution of code.  Intended for running code sometimes
+
 Decimate
 -
-README_decimate.md
+**README_decimate.md**
+
 Tools for executing code sometimes, mostly to reduce how many times
 something is executed or execute it only once, intended for managing logging
 frequency of events that happen often but need to be logged much less often. 
 
 DeadCode
 -
-README_deadcode.md
+**README_deadcode.md**
+
 Tools for detecting code no longer in use
 
 
