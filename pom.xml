@@ -6,7 +6,7 @@
 
     <groupId>io.github.achacha</groupId>
     <artifactId>Decimated</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <name>Decimated</name>
     <description>Classes to help control/throttle execution frequency of code, and more</description>
