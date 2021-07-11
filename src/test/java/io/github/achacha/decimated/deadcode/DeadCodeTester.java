@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeadCodeTester {
-    List<String> LOGGER = new ArrayList<>(1);
+    final List<String> LOGGER = new ArrayList<>(1);
 
     public void methodCalled() {
         DeadCode.get().trigger((accessPoint)-> LOGGER.add("Method was called: " + accessPoint.getLocation() + " at " + accessPoint.getAccessTime()));

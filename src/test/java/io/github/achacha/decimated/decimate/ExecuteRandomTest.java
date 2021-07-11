@@ -43,7 +43,9 @@ class ExecuteRandomTest {
     /**
      * Test {@link Random} that always returns the same value
      */
+    @SuppressWarnings("SerializableHasSerializationMethods")
     private static class ConstantRng extends Random {
+        private static final long serialVersionUID = -414326539261454094L;
         private final double c;
 
         public ConstantRng(double c) {

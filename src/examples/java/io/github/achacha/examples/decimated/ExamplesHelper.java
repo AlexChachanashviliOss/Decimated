@@ -10,6 +10,7 @@ public final class ExamplesHelper {
     {
         System.out.println("Press RETURN key to exit");
         try {
+            //noinspection ResultOfMethodCallIgnored
             System.in.read();
         } catch (IOException e) {
             System.out.println("\nExiting");
