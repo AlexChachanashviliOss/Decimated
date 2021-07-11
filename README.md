@@ -1,15 +1,15 @@
 What is it?
 ===
 
-Collection of code for decimated execution of code.  Intended for running code sometimes
+Collection of API for decimated execution of code.  Intended for running code sometimes
 
 Decimate
 -
-**README_decimate.md**
+**README_decimated.md**
 
 Tools for executing code sometimes, mostly to reduce how many times
 something is executed or execute it only once, intended for managing logging
-frequency of events that happen often but need to be logged much less often. 
+frequency of events that occur often but need to be logged much less often. 
 
 DeadCode
 -

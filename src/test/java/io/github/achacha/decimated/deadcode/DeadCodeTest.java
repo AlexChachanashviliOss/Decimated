@@ -31,6 +31,12 @@ class DeadCodeTest {
         // Verify all triggers found
         Set<Member> members = DeadCode.get().findAll();
         Assertions.assertEquals(4, members.size());
+        Assertions.assertEquals(
+                "private static void io.github.achacha.decimated.deadcode.DeadCodeTest.wrapperForTrigger(java.util.concurrent.atomic.AtomicInteger)\n" +
+                "public void io.github.achacha.decimated.deadcode.DeadCodeTester.methodCalled()\n" +
+                "private static void io.github.achacha.decimated.deadcode.DeadCodeTest.wrapperForTriggerWithCount(java.util.concurrent.atomic.AtomicInteger,int)\n" +
+                "public void io.github.achacha.decimated.deadcode.DeadCodeTester.methodNeverCalled()",
+                members.stream().map(Object::toString).collect(Collectors.joining("\n")));
 
         // Call method multiple times from same code location
         DeadCodeTester tester = new DeadCodeTester();

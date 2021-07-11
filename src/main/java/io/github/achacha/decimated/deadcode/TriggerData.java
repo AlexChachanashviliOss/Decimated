@@ -61,6 +61,16 @@ public class TriggerData {
         public String getLocation() {
             return location;
         }
+
+        @Override
+        public String toString() {
+            return "TRIGGER {" +
+                    "accessTime=" + accessTime +
+                    ", hashCode=" + hashCode +
+                    ", location='" + location + '\'' +
+                    ", throwable=" + StackTraceUtil.toString(throwable) +
+                    '}';
+        }
     }
 
     /**

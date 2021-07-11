@@ -1,7 +1,7 @@
 package io.github.achacha.decimated.decimate;
 
 /**
- * Execute code then skip N
+ * Execute N times total, never more than once per interval
  */
 class ExecuteN extends AbstractExecutor {
     private int n;
@@ -14,10 +14,11 @@ class ExecuteN extends AbstractExecutor {
 
     @Override
     public void execute() {
-        if (n-- > 0) {
+        if (n > 0) {
             if (ifCanRunUpdateLastRun()) {
                 synchronized (runnable) {
                     runnable.run();
+                    --n;
                 }
             }
         }

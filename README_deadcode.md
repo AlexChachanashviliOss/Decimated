@@ -51,3 +51,5 @@ DeadCode.trigger((accessPoint)->{
 );
 });
 ```
+
+See: /src/examples for more

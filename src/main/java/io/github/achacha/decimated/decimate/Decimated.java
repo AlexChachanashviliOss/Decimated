@@ -2,6 +2,7 @@ package io.github.achacha.decimated.decimate;
 
 import io.github.achacha.decimated.StackTraceUtil;
 
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Decimated {
@@ -94,7 +95,18 @@ public final class Decimated {
     }
 
     /**
-     * Execute N times and skip everything after
+     * Execute once every given interval
+     *
+     * @param runnable {@link Runnable} code to execute
+     * @param intervalMillis Execute every interval milliseconds
+     */
+    public static void oncePerInterval(Runnable runnable, long intervalMillis) {
+        final String location = StackTraceUtil.getCallerLocation();
+        locations.computeIfAbsent(location, (loc)-> new ExecuteThenSkip(0, runnable, intervalMillis)).execute();
+    }
+
+    /**
+     * Execute N times total and skip everything after
      *
      * @param n times to run
      * @param runnable {@link Runnable} code to execute
@@ -105,7 +117,7 @@ public final class Decimated {
     }
 
     /**
-     * Execute N times and skip everything after
+     * Execute N times total and skip everything after
      * Only one execution per interval
      *
      * @param n times to run
@@ -115,5 +127,43 @@ public final class Decimated {
     public static void nTimes(int n, Runnable runnable, long intervalMillis) {
         final String location = StackTraceUtil.getCallerLocation();
         locations.computeIfAbsent(location, (loc)-> new ExecuteN(n, runnable, intervalMillis)).execute();
+    }
+
+    /**
+     * Execute when random number is less than or equals to threshold
+     * @param threshold [0.0, 1.0] to compare &lt;= to RNG, 0.0 is never match, 1.0 is always match
+     * @param runnable {@link Runnable} code to execute
+     */
+    public static void random(double threshold, Runnable runnable) {
+        final String location = StackTraceUtil.getCallerLocation();
+        locations.computeIfAbsent(location, (loc)-> new ExecuteRandom(threshold, runnable,0)).execute();
+    }
+
+    /**
+     * Execute when random number is less than or equals to threshold
+     * @param threshold [0.0, 1.0] to compare &lt;= to RNG, 0.0 is never match, 1.0 is always match
+     * @param runnable {@link Runnable} code to execute
+     * @param intervalMillis Execute every interval milliseconds
+     */
+    public static void random(double threshold, Runnable runnable, long intervalMillis) {
+        final String location = StackTraceUtil.getCallerLocation();
+        locations.computeIfAbsent(location, (loc)-> new ExecuteRandom(threshold, runnable, intervalMillis)).execute();
+    }
+
+    /**
+     * Execute when random number is less than or equals to threshold
+     * @param threshold [0.0, 1.0] to compare &lt;= to RNG, 0.0 is never match, 1.0 is always match
+     * @param runnable {@link Runnable} code to execute
+     * @param intervalMillis Execute every interval milliseconds
+     * @param rng {@link Random} RNG to use for test against threshold
+     */
+    public static void random(double threshold, Runnable runnable, long intervalMillis, Random rng) {
+        final String location = StackTraceUtil.getCallerLocation();
+        locations.computeIfAbsent(location, (loc)-> new ExecuteRandom(
+                threshold,
+                runnable,
+                intervalMillis,
+                rng
+        )).execute();
     }
 }

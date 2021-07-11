@@ -23,7 +23,16 @@ class StackTraceUtilTest {
         Throwable throwable2 = new Throwable();
         int hashCode1 = StackTraceUtil.toHash(throwable1);
         int hashCode2 = StackTraceUtil.toHash(throwable2);
+
         Assertions.assertNotEquals(hashCode1, hashCode2);
     }
 
+    @Test
+    void testToString() {
+        Throwable throwable = new Throwable();
+        String str = StackTraceUtil.toString(throwable);
+
+        Assertions.assertTrue(str.contains("java.lang.Throwable"));
+        Assertions.assertTrue(str.contains("io.github.achacha.decimated.StackTraceUtilTest.testToString(StackTraceUtilTest.java:"));
+    }
 }

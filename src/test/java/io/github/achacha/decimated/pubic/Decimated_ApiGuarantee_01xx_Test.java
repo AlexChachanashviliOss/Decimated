@@ -4,6 +4,8 @@ import io.github.achacha.decimated.decimate.Decimated;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 /**
  * Methods guaranteed by 1.x API
  *
@@ -51,6 +53,13 @@ public class Decimated_ApiGuarantee_01xx_Test {
                 Runnable.class
                 )
         );
+        // 1.0.1
+        Assertions.assertNotNull(Decimated.class.getMethod(
+                "oncePerInterval",
+                Runnable.class,
+                long.class
+                )
+        );
 
         // 1.0.0
         Assertions.assertNotNull(Decimated.class.getMethod(
@@ -65,6 +74,31 @@ public class Decimated_ApiGuarantee_01xx_Test {
                 int.class,
                 Runnable.class,
                 long.class
+                )
+        );
+
+        // 1.0.1
+        Assertions.assertNotNull(Decimated.class.getMethod(
+                "random",
+                double.class,
+                Runnable.class
+                )
+        );
+        // 1.0.1
+        Assertions.assertNotNull(Decimated.class.getMethod(
+                "random",
+                double.class,
+                Runnable.class,
+                long.class
+                )
+        );
+        // 1.0.1
+        Assertions.assertNotNull(Decimated.class.getMethod(
+                "random",
+                double.class,
+                Runnable.class,
+                long.class,
+                Random.class
                 )
         );
     }

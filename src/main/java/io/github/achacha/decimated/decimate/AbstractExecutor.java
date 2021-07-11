@@ -18,7 +18,7 @@ public abstract class AbstractExecutor implements Executor {
 
     protected boolean ifCanRunUpdateLastRun() {
         if (intervalMillis == 0 || TimeUtil.getMillis() - lastRun >= intervalMillis) {
-            // Assumed returning true means we are going to run executor sp update lastRun
+            // Assumed returning true means we are going to run executor so update lastRun
             lastRun = TimeUtil.getMillis();
             return true;
         }

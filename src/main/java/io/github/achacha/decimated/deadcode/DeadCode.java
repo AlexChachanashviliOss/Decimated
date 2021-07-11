@@ -13,7 +13,7 @@ public class DeadCode {
     /** Instance created by call to {@link #initialize(String)}  */
     private static DeadCodeManager manager;
 
-    public DeadCode() {
+    private DeadCode() {
     }
 
     /**

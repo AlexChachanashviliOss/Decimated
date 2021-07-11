@@ -1,8 +1,6 @@
 package io.github.achacha.decimated.decimate;
 
 import io.github.achacha.decimated.TimeUtil;
-import io.github.achacha.decimated.decimate.Decimated;
-import io.github.achacha.decimated.decimate.ExecuteThenSkip;
 import io.github.achacha.decimated.timeprovider.TimeProviderFixed;
 import io.github.achacha.decimated.timeprovider.TimeProviderSystem;
 import org.junit.jupiter.api.Assertions;
@@ -113,6 +111,41 @@ class ExecuteThenSkipTest {
             String result = sb.toString();
             Assertions.assertEquals(10, result.length());
             Assertions.assertEquals("!_____!___", result);
+        }
+        finally {
+            TimeUtil.setTimeProvider(new TimeProviderSystem());
+        }
+    }
+
+    /**
+     * Execute initially, 1 every 1000ms
+     * XXXXXXXXXX
+     * TTTTTTTTTT
+     * !____!____
+     *
+     * Will log 2 instances given the interval
+     */
+    @Test
+    void testOncePerInterval() {
+        try {
+            TimeProviderFixed timeProvider = new TimeProviderFixed();
+            TimeUtil.setTimeProvider(timeProvider);
+            timeProvider.setMillis(10000);
+
+            final int SIZE = 10;
+            final StringBuilder sb = new StringBuilder(SIZE);
+            for (int i=0; i<SIZE; ++i) {
+                // Execute then skip, each iteration advances time by 200 millis
+                Decimated.oncePerInterval(()-> sb.append("!"), 1000);
+                while (sb.length() < i+1) {
+                    sb.append("_");
+                }
+                timeProvider.addMillis(200);
+            }
+
+            String result = sb.toString();
+            Assertions.assertEquals(10, result.length());
+            Assertions.assertEquals("!____!____", result);
         }
         finally {
             TimeUtil.setTimeProvider(new TimeProviderSystem());

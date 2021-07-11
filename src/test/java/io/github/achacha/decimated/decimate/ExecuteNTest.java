@@ -46,12 +46,15 @@ class ExecuteNTest {
     }
 
     /**
-     * XXXXX_____
+     * Log up to 4 times, never more than once every second
+     * clock advances by 500ms
+     *
+     * XXXXXXXXXX
      * T_T_T_T_T_
-     * !_!_!_____
+     * !_!_!_!___
      */
     @Test
-    void testInterval() {
+    void testInterval4Times() {
         try {
             TimeProviderFixed timeProvider = new TimeProviderFixed();
             TimeUtil.setTimeProvider(timeProvider);
@@ -61,7 +64,7 @@ class ExecuteNTest {
             final StringBuilder sb = new StringBuilder(SIZE);
             for (int i=0; i<SIZE; ++i) {
                 // Execute then skip, each iteration advances time by 200 millis
-                Decimated.nTimes(5, ()-> sb.append("!"), 1000);
+                Decimated.nTimes(4, ()-> sb.append("!"), 1000);
                 while (sb.length() < i+1) {
                     sb.append("_");
                 }
@@ -70,7 +73,42 @@ class ExecuteNTest {
 
             String result = sb.toString();
             Assertions.assertEquals(10, result.length());
-            Assertions.assertEquals("!_!_!_____", result);
+            Assertions.assertEquals("!_!_!_!___", result);
+        }
+        finally {
+            TimeUtil.setTimeProvider(new TimeProviderSystem());
+        }
+    }
+
+    /**
+     * Log up to 3 times, once every second
+     * clock advance by 250ms
+     *
+     * XXXXXXXXXX
+     * T_T_T_T_T_
+     * !___!___!_
+     */
+    @Test
+    void testInterval3Times() {
+        try {
+            TimeProviderFixed timeProvider = new TimeProviderFixed();
+            TimeUtil.setTimeProvider(timeProvider);
+            timeProvider.setMillis(10000);
+
+            final int SIZE = 10;
+            final StringBuilder sb = new StringBuilder(SIZE);
+            for (int i=0; i<SIZE; ++i) {
+                // Execute then skip, each iteration advances time by 200 millis
+                Decimated.nTimes(3, ()-> sb.append("!"), 1_000);
+                while (sb.length() < i+1) {
+                    sb.append("_");
+                }
+                timeProvider.addMillis(250);
+            }
+
+            String result = sb.toString();
+            Assertions.assertEquals(10, result.length());
+            Assertions.assertEquals("!___!___!_", result);
         }
         finally {
             TimeUtil.setTimeProvider(new TimeProviderSystem());

@@ -2,6 +2,10 @@ package io.github.achacha.decimated;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public final class StackTraceUtil {
     private StackTraceUtil() {
     }
@@ -32,5 +36,22 @@ public final class StackTraceUtil {
             builder.append(toLocation(ste));
         }
         return builder.toHashCode();
+    }
+
+    /**
+     * Convert Throwable to String
+     * @param t Throwable
+     * @return String representation of {@link Throwable}
+     */
+    public static String toString(Throwable t) {
+        try (
+                StringWriter sw = new StringWriter(2048);
+                PrintWriter pw = new PrintWriter(sw)
+        ) {
+            t.printStackTrace(pw);
+            return sw.toString();
+        } catch (IOException e) {
+            return e.getMessage();
+        }
     }
 }
