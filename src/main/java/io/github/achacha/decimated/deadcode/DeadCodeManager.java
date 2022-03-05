@@ -107,7 +107,7 @@ public class DeadCodeManager {
             );
 
             Set<Member> members = new HashSet<>(4);
-            methods.stream().map(reflections::getMethodUsage).forEach(members::addAll);
+            methods.stream().map(reflections::getMemberUsage).forEach(members::addAll);
             return members;
         } catch (NoSuchMethodException e) {
             // This should never happen unless method name was changed
